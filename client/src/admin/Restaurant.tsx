@@ -1,91 +1,62 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  RestaurantFormSchema,
-  restaurantFromSchema,
-} from "@/schema/restaurantSchema";
-import { useRestaurantStore } from "@/store/useRestaurantStore";
+import { useState as ReactUseState, FormEvent } from "react";
 import { Loader2 } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
 
-const Restaurant = () => {
-  const [input, setInput] = useState<RestaurantFormSchema>({
+const restaurant = () => {
+  const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInput((prevInput) => ({
+      ...prevInput,
+      [name]: value,
+    }));
+  };
+  const [input, setInput] = useState<{
+    restaurantName: string;
+    city: string;
+    country: string;
+    deliveryTime: string;
+    cuisines: string[];
+    imageFile: File | undefined;
+  }>({
     restaurantName: "",
     city: "",
     country: "",
-    deliveryTime: 0,
+    deliveryTime: "",
     cuisines: [],
     imageFile: undefined,
   });
-  const [errors, setErrors] = useState<Partial<RestaurantFormSchema>>({});
-  const {
-    loading,
-    restaurant,
-    updateRestaurant,
-    createRestaurant,
-    getRestaurant,
-  } = useRestaurantStore();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  function submitHandler(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
 
-  const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    setInput({ ...input, [name]: type === "number" ? Number(value) : value });
-  };
+    const newErrors: Record<string, string> = {};
+    if (!input.restaurantName)
+      newErrors.restaurantName = "Restaurant name is required.";
+    if (!input.city) newErrors.city = "City is required.";
+    if (!input.country) newErrors.country = "Country is required.";
+    if (!input.deliveryTime)
+      newErrors.deliveryTime = "Delivery time is required.";
+    if (!input.cuisines || input.cuisines.length === 0)
+      newErrors.cuisines = "At least one cuisine is required.";
+    if (!input.imageFile)
+      newErrors.imageFile = "Restaurant banner is required.";
 
-  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const result = restaurantFromSchema.safeParse(input);
-    if (!result.success) {
-      const fieldErrors = result.error.formErrors.fieldErrors;
-      setErrors(fieldErrors as Partial<RestaurantFormSchema>);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
-    // add restaurant api implementation start from here
-    try {
-      const formData = new FormData();
-      formData.append("restaurantName", input.restaurantName);
-      formData.append("city", input.city);
-      formData.append("country", input.country);
-      formData.append("deliveryTime", input.deliveryTime.toString());
-      formData.append("cuisines", JSON.stringify(input.cuisines));
 
-      if (input.imageFile) {
-        formData.append("imageFile", input.imageFile);
-      }
+    setErrors({});
+    setLoading(true);
 
-      if (restaurant) {
-        // update
-        await updateRestaurant(formData);
-      } else {
-        // create
-        await createRestaurant(formData);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchRestaurant = async () => {
-      await getRestaurant();
-      if(restaurant){
-        setInput({
-          restaurantName: restaurant.restaurantName || "",
-          city: restaurant.city || "",
-          country: restaurant.country || "",
-          deliveryTime: restaurant.deliveryTime || 0,
-          cuisines: restaurant.cuisines
-            ? restaurant.cuisines.map((cuisine: string) => cuisine)
-            : [],
-          imageFile: undefined,
-        });
-      };
-      }
-    fetchRestaurant();
-    console.log(restaurant);
-    
-  }, []);
+    setTimeout(() => {
+      console.log("Form submitted successfully with data:", input);
+      setLoading(false);
+    }, 2000);
+  }
 
   return (
     <div className="max-w-6xl mx-auto my-10">
@@ -187,20 +158,20 @@ const Restaurant = () => {
                 />
                 {errors && (
                   <span className="text-xs text-red-600 font-medium">
-                    {errors.imageFile?.name}
+                    {errors.imageFile}
                   </span>
                 )}
               </div>
             </div>
             <div className="my-5 w-fit">
               {loading ? (
-                <Button disabled className="bg-orange hover:bg-hoverOrange">
+                <Button disabled className="bg-orange-500 hover:bg-orange-400 ">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (
-                <Button className="bg-orange hover:bg-hoverOrange">
-                  {restaurant
+                <Button className="bg-orange-500 hover:bg-orange-400 ">
+                  {input.restaurantName
                     ? "Update Your Restaurant"
                     : "Add Your Restaurant"}
                 </Button>
@@ -213,4 +184,10 @@ const Restaurant = () => {
   );
 };
 
-export default Restaurant;
+function useState<T>(
+  initialState: T
+): [T, React.Dispatch<React.SetStateAction<T>>] {
+  return ReactUseState(initialState);
+}
+
+export default restaurant;

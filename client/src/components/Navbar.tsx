@@ -44,32 +44,60 @@ import { useThemeStore } from "@/store/useThemeStore";
 const Navbar = () => {
   const { user, loading, logout } = useUserStore();
   const { cart } = useCartStore();
-  const {setTheme} = useThemeStore();
+  const { setTheme } = useThemeStore();
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="mx-auto w-full ">
       <div className="flex items-center justify-between h-14">
         <Link to="/">
-          <h1 className="font-bold md:font-extrabold text-2xl">PatelEats</h1>
+          <h1 className=" text-black dark:text-white font-bold md:font-extrabold absolute top-0 left-0 m-4 text-2xl">
+            OrderEase
+          </h1>
         </Link>
-        <div className="hidden md:flex items-center gap-10">
+        <div className="hidden md:flex items-center gap-5 absolute top-0 right-0 mt-4 mr-4">
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/">Home</Link>
-            <Link to="/profile">Profile</Link>
-            <Link to="/order/status">Order</Link>
+            <Link
+              to="/"
+              className="text-black dark:text-white hover:text-orange-500"
+            >
+              Home
+            </Link>
+            <Link
+              to="/profile"
+              className="text-black dark:text-white hover:text-orange-500"
+            >
+              Profile
+            </Link>
+            <Link
+              to="/order/status"
+              className="text-black dark:text-white hover:text-orange-500"
+            >
+              Order
+            </Link>
 
             {user?.admin && (
               <Menubar>
                 <MenubarMenu>
-                  <MenubarTrigger>Dashboard</MenubarTrigger>
+                  <MenubarTrigger className="text-black dark:text-white hover:text-orange-500">
+                    Dashboard
+                  </MenubarTrigger>
                   <MenubarContent>
-                    <Link to="/admin/restaurant">
+                    <Link
+                      to="/admin/restaurant"
+                      className="text-black dark:text-white hover:text-orange-500"
+                    >
                       <MenubarItem>Restaurant</MenubarItem>
                     </Link>
-                    <Link to="/admin/menu">
+                    <Link
+                      to="/admin/menu"
+                      className="text-black dark:text-white hover:text-orange-500 block mb-2"
+                    >
                       <MenubarItem>Menu</MenubarItem>
                     </Link>
-                    <Link to="/admin/orders">
+                    <Link
+                      to="/admin/orders"
+                      className="text-black dark:text-white hover:text-orange-500 block mb-2"
+                    >
                       <MenubarItem>Orders</MenubarItem>
                     </Link>
                   </MenubarContent>
@@ -88,17 +116,21 @@ const Navbar = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={()=> setTheme('light')}>Light</DropdownMenuItem>
-                  <DropdownMenuItem onClick={()=> setTheme('dark')}>Dark</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme("light")}>
+                    Light
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme("dark")}>
+                    Dark
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             <Link to="/cart" className="relative cursor-pointer">
-              <ShoppingCart />
+              <ShoppingCart className="text-black dark:text-white" />
               {cart.length > 0 && (
                 <Button
                   size={"icon"}
-                  className="absolute -inset-y-3 left-2 text-xs rounded-full w-4 h-4 bg-red-500 hover:bg-red-500"
+                  className="absolute -top-3 -right-0 bg-red-400 hover:bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center"
                 >
                   {cart.length}
                 </Button>
@@ -106,20 +138,20 @@ const Navbar = () => {
             </Link>
             <div>
               <Avatar>
-                <AvatarImage src={user?.profilePicture} alt="profilephoto" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src="https://cdn-icons-png.flaticon.com/128/1144/1144709.png" />
+                <AvatarFallback>Profile</AvatarFallback>
               </Avatar>
             </div>
             <div>
               {loading ? (
-                <Button className="bg-orange hover:bg-hoverOrange">
+                <Button className="bg-orange-400 hover:bg-orange-500">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
                 </Button>
               ) : (
                 <Button
                   onClick={logout}
-                  className="bg-orange hover:bg-hoverOrange"
+                  className="bg-orange-400 hover:bg-orange-500"
                 >
                   Logout
                 </Button>
@@ -140,7 +172,7 @@ export default Navbar;
 
 const MobileNavbar = () => {
   const { user, logout, loading } = useUserStore();
-  const {setTheme} = useThemeStore();
+  const { setTheme } = useThemeStore();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -154,7 +186,7 @@ const MobileNavbar = () => {
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
-          <SheetTitle>PatelEats</SheetTitle>
+          <SheetTitle>OrderEase</SheetTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
@@ -164,8 +196,12 @@ const MobileNavbar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("light")}>
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
+                Dark
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SheetHeader>
@@ -224,18 +260,18 @@ const MobileNavbar = () => {
               <AvatarImage src={user?.profilePicture} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <h1 className="font-bold">Patel Mernstack</h1>
+            <h1 className="font-bold">OrderEase</h1>
           </div>
           <SheetClose asChild>
             {loading ? (
-              <Button className="bg-orange hover:bg-hoverOrange">
+              <Button className="bg-orange-400 hover:bg-orange-500">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
               <Button
                 onClick={logout}
-                className="bg-orange hover:bg-hoverOrange"
+                className="bg-orange-400 hover:bg-orange-500"
               >
                 Logout
               </Button>

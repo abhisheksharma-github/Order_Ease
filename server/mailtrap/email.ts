@@ -1,6 +1,6 @@
 import { generatePasswordResetEmailHtml, generateResetSuccessEmailHtml, generateWelcomeEmailHtml, htmlContent } from "./htmlEmail";
 import { client, sender } from "./mailtrap";
-
+import axios from 'axios';
 export const sendVerificationEmail = async (email: string, verificationToken: string) => {
     const recipient = [{ email }];
     try {
@@ -24,10 +24,10 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
         const res = await client.send({
             from: sender,
             to: recipient,
-            subject: 'Welcome to PatelEats',
+            subject: 'Welcome to OrderEase',
             html:htmlContent,
             template_variables:{
-                company_info_name:"PatelEats",
+                company_info_name:"OrderEase",
                 name:name
             }
         });
@@ -68,3 +68,11 @@ export const sendResetSuccessEmail = async (email:string) => {
         throw new Error("Failed to send password reset success email");
     }
 }
+const axiosInstance = axios.create({
+    baseURL: 'https://send.api.mailtrap.io/api',
+    timeout: 30000, // 30 seconds
+   headers: {
+  Authorization: `Bearer ${process.env.MAILTRAP_API_TOKEN}`,
+  'Content-Type': 'application/json',
+},
+  });

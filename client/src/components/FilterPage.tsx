@@ -1,45 +1,48 @@
-import { useRestaurantStore } from "@/store/useRestaurantStore";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
-import { Label } from "./ui/label";
-
 export type FilterOptionsState = {
   id: string;
   label: string;
 };
-// agar applied filter k andr ye item exixt krta hia toh iska mtlb checked hai
-const filterOptions: FilterOptionsState[] = [
-  { id: "burger", label: "Burger" },
-  { id: "thali", label: "Thali" },
-  { id: "biryani", label: "Biryani" },
-  { id: "momos", label: "Momos" },
+const FilterOptions: FilterOptionsState[] = [
+  {
+    id: "burger",
+    label: "burger",
+  },
+  {
+    id: "Momo",
+    label: "Momo",
+  },
+  {
+    id: "Pizza",
+    label: "Pizza",
+  },
+  {
+    id: "Chilli Potato",
+    label: "Chilli Potato",
+  },
 ];
-
 const FilterPage = () => {
-  const { setAppliedFilter, appliedFilter, resetAppliedFilter } = useRestaurantStore();
-  const appliedFilterHandler = (value: string) => {
-    setAppliedFilter(value);
-  };
   return (
     <div className="md:w-72">
       <div className="flex items-center justify-between">
-        <h1 className="font-medium text-lg">Filter by cuisines</h1>
-        <Button variant={"link"} onClick={resetAppliedFilter}>Reset</Button>
+        <h1 className="font-medium text-lg">Filter by Dish's</h1>
+        <button className="bg-orange-400 hover:bg-orange-500 text-black font-semibold py-2 px-4 rounded-full shadow-md transition-colors">
+          Reset
+        </button>
       </div>
-      {filterOptions.map((option) => (
+      {FilterOptions.map((option) => (
         <div key={option.id} className="flex items-center space-x-2 my-5">
-          <Checkbox
+          <input
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            type="checkbox"
             id={option.id}
-            checked={appliedFilter.includes(option.label)}
-            onClick={() => appliedFilterHandler(option.label)}
+            name={option.label}
           />
-          <Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          <label htmlFor={option.id} className="ml-2">
             {option.label}
-          </Label>
+          </label>
         </div>
       ))}
     </div>
   );
 };
-
 export default FilterPage;

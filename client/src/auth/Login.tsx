@@ -31,7 +31,8 @@ const Login = () => {
     try {
       await login(input);
       navigate("/");
-    } catch (error) {console.log(error);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -42,7 +43,7 @@ const Login = () => {
         className="md:p-8 w-full max-w-md rounded-lg md:border border-gray-200 mx-4"
       >
         <div className="mb-4">
-          <h1 className="font-bold text-2xl">PatelEats</h1>
+          <h1 className="font-bold text-2xl">OrderEaseEats</h1>
         </div>
         <div className="mb-4">
           <div className="relative">
@@ -78,13 +79,16 @@ const Login = () => {
         </div>
         <div className="mb-10">
           {loading ? (
-            <Button disabled className="w-full bg-orange hover:bg-hoverOrange">
+            <Button
+              disabled
+              className="w-full  bg-orange-500 hover:bg-orange-400 hover:border-red-500 "
+            >
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
             </Button>
           ) : (
             <Button
               type="submit"
-              className="w-full bg-orange hover:bg-hoverOrange"
+              className="w-full  bg-orange-500 hover:bg-orange-400 hover:border-red-500 "
             >
               Login
             </Button>

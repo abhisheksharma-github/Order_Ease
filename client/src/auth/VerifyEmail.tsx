@@ -33,10 +33,12 @@ const VerifyEmail = () => {
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const verificationCode = otp.join("");
+    console.log(verificationCode);
     try {
       await verifyEmail(verificationCode);
       navigate("/");
-    } catch (error) {console.log(error);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -71,13 +73,13 @@ const VerifyEmail = () => {
           {loading ? (
             <Button
               disabled
-              className="bg-orange hover:bg-hoverOrange mt-6 w-full"
+              className=" bg-orange-500 hover:bg-orange-400 hover:border-red-500  mt-6 w-full"
             >
               <Loader2 className="mr-2 w-4 h-4 animate-spin" />
               Please wait
             </Button>
           ) : (
-            <Button className="bg-orange hover:bg-hoverOrange mt-6 w-full">
+            <Button className=" bg-orange-500 hover:bg-orange-400 hover:border-red-500 mt-6 w-full">
               Verify
             </Button>
           )}

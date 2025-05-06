@@ -10,41 +10,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MenuFormSchema, menuSchema } from "@/schema/menuSchema";
-import { useMenuStore } from "@/store/useMenuStore";
-import { MenuItem } from "@/types/restaurantType";
 import { Loader2 } from "lucide-react";
-import {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, FormEvent, useEffect } from "react";
+import { useState } from "react";
 
-const EditMenu = ({
-  selectedMenu,
-  editOpen,
-  setEditOpen,
-}: {
-  selectedMenu: MenuItem;
+type EditMenuProps = {
   editOpen: boolean;
-  setEditOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
+  setEditopen: Dispatch<SetStateAction<boolean>>;
+  selectedMenu: MenuFormSchema; // Change `any` to the proper type of your menu item
+};
+const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
   const [input, setInput] = useState<MenuFormSchema>({
     name: "",
     description: "",
     price: 0,
     image: undefined,
   });
-  const [error, setError] = useState<Partial<MenuFormSchema>>({});
-  const {loading, editMenu} = useMenuStore();
-
-  const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    setInput({ ...input, [name]: type === "number" ? Number(value) : value });
-  };
-
-  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = menuSchema.safeParse(input);
     if (!result.success) {
@@ -52,23 +34,18 @@ const EditMenu = ({
       setError(fieldErrors as Partial<MenuFormSchema>);
       return;
     }
-     
+
     // api ka kaam start from here
-    try {
-      const formData = new FormData();
-      formData.append("name", input.name);
-      formData.append("description", input.description);
-      formData.append("price", input.price.toString());
-      if(input.image){
-        formData.append("image", input.image);
-      }
-      await editMenu(selectedMenu._id, formData);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
-  useEffect(() => { 
+  const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInput((prevInput: any) => ({
+      ...prevInput,
+      [name]: name === "price" ? parseFloat(value) : value,
+    }));
+  };
+  useEffect(() => {
     setInput({
       name: selectedMenu?.name || "",
       description: selectedMenu?.description || "",
@@ -76,13 +53,15 @@ const EditMenu = ({
       image: undefined,
     });
   }, [selectedMenu]);
+  const [error, setError] = useState<Partial<MenuFormSchema>>();
+  const loading = false;
   return (
-    <Dialog open={editOpen} onOpenChange={setEditOpen}>
+    <Dialog open={editOpen} onOpenChange={setEditopen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Menu</DialogTitle>
           <DialogDescription>
-            Update your menu to keep your offerings fresh and exciting!
+            Update Your Menu here! Keep your offering fresh and exciting.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submitHandler} className="space-y-4">
@@ -92,21 +71,29 @@ const EditMenu = ({
               type="text"
               name="name"
               value={input.name}
+              placeholder="Enter Menu Name"
               onChange={changeEventHandler}
-              placeholder="Enter menu name"
             />
-            {error && <span className="text-xs font-medium text-red-600">{error.name}</span>}
+            {error && (
+              <span className="text-xs font-medium text-red-600">
+                {error.name}
+              </span>
+            )}
           </div>
           <div>
             <Label>Description</Label>
             <Input
               type="text"
               name="description"
+              placeholder="Enter menu description"
               value={input.description}
               onChange={changeEventHandler}
-              placeholder="Enter menu description"
             />
-            {error && <span className="text-xs font-medium text-red-600">{error.description}</span>}
+            {error && (
+              <span className="text-xs font-medium text-red-600">
+                {error.description}
+              </span>
+            )}
           </div>
           <div>
             <Label>Price in (Rupees)</Label>
@@ -114,10 +101,14 @@ const EditMenu = ({
               type="number"
               name="price"
               value={input.price}
+              placeholder="Enter Menu price"
               onChange={changeEventHandler}
-              placeholder="Enter menu price"
             />
-            {error && <span className="text-xs font-medium text-red-600">{error.price}</span>}
+            {error && (
+              <span className="text-xs font-medium text-red-600">
+                {error.price}
+              </span>
+            )}
           </div>
           <div>
             <Label>Upload Menu Image</Label>
@@ -125,19 +116,28 @@ const EditMenu = ({
               type="file"
               name="image"
               onChange={(e) =>
-                setInput({ ...input, image: e.target.files?.[0] || undefined })
+                setInput((prevInput: any) => ({
+                  ...prevInput,
+                  image: e.target.files ? e.target.files[0] : undefined,
+                }))
               }
             />
-            {error && <span className="text-xs font-medium text-red-600">{error.image?.name}</span>}
+            {error && (
+              <span className="text-xs font-medium text-red-600">
+                {error.image?.name}
+              </span>
+            )}
           </div>
           <DialogFooter className="mt-5">
             {loading ? (
-              <Button disabled className="bg-orange hover:bg-hoverOrange">
+              <Button disabled className="bg-orange-400 hover:bg-orange-500">
                 <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                Please wait
+                Please Wait
               </Button>
             ) : (
-              <Button className="bg-orange hover:bg-hoverOrange">Submit</Button>
+              <Button className="bg-orange-400 hover:bg-orange-500">
+                Submit Here
+              </Button>
             )}
           </DialogFooter>
         </form>
