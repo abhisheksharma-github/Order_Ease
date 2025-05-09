@@ -1,112 +1,223 @@
-// import { useState } from "react";
-// import { Minus, Plus } from "lucide-react";
-// import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-// import { Button } from "./ui/button";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableFooter,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "./ui/table";
-// import CheckoutConfirmPage from "./CheckoutConfirmPage";
+// import { create } from "zustand";
+// import { createJSONStorage, persist } from "zustand/middleware";
+// import axios from "axios";
+// import { LoginInputState, SignupInputState } from "@/schema/userSchema";
+// import { toast } from "sonner";
 
-// const Cart = () => {
-//   const [open, setOpen] = useState<boolean>(false);
+// const API_END_POINT = "http://localhost:8000/api/v1/user";
+// axios.defaults.withCredentials = true;
 
-//   return (
-//     <div className="mx-auto my-12 px-4 sm:px-6 lg:px-8 max-w-full">
-//       <div className="flex justify-end mb-4">
-//         <Button variant="link">Clear All</Button>
-//       </div>
-//       <div className="overflow-x-auto w-full">
-//         <Table className="min-w-full table-auto">
-//           <TableHeader>
-//             <TableRow>
-//               <TableHead className="text-center">Item</TableHead>
-//               <TableHead className="text-center">Title</TableHead>
-//               <TableHead className="text-center">Price</TableHead>
-//               <TableHead className="text-center">Quantity</TableHead>
-//               <TableHead className="text-center">Table No</TableHead>
-//               <TableHead className="text-center">Total</TableHead>
-//               <TableHead className="text-center">Remove</TableHead>
-//             </TableRow>
-//           </TableHeader>
-//           <TableBody>
-//             <TableRow>
-//               <TableCell className="text-center">
-//                 <Avatar>
-//                   <AvatarImage src="" />
-//                   <AvatarFallback>CN</AvatarFallback>
-//                 </Avatar>
-//               </TableCell>
-//               <TableCell className="text-center">
-//                 Butter Chicken Curry
-//               </TableCell>
-//               <TableCell className="text-center">280</TableCell>
-//               <TableCell className="text-center">
-//                 <div className="w-fit flex items-center justify-center rounded-full border border-gray-100 dark:border-gray-800 shadow-md">
-//                   <Button
-//                     size={"icon"}
-//                     variant={"outline"}
-//                     className="rounded-full bg-gray-100 bg-orange-0 hover:bg-orange-400"
-//                   >
-//                     <Minus />
-//                   </Button>
-//                   <Button
-//                     size={"icon"}
-//                     className="font-extrabold"
-//                     disabled
-//                     variant={"outline"}
-//                   >
-//                     1
-//                   </Button>
-//                   <Button
-//                     size={"icon"}
-//                     className="rounded-full bg-orange-0 hover:bg-orange-400"
-//                     variant={"outline"}
-//                     onClick={() => console.log("Increment quantity")}
-//                   >
-//                     <Plus />
-//                   </Button>
-//                 </div>
-//               </TableCell>
-//               <TableCell className="text-center">1</TableCell>
-//               <TableCell className="text-center">280</TableCell>
-//               <TableCell className="text-center">
-//                 <Button
-//                   size={"sm"}
-//                   className="rounded-full text-gray-700 bg-orange-300 hover:bg-orange-500"
-//                 >
-//                   Remove
-//                 </Button>
-//               </TableCell>
-//             </TableRow>
-//           </TableBody>
-//           <TableFooter>
-//             <TableRow className="text-2xl font-bold">
-//               <TableCell colSpan={6} className="text-right">
-//                 Total:
-//               </TableCell>
-//               <TableCell className="text-right">280</TableCell>
-//             </TableRow>
-//           </TableFooter>
-//         </Table>
-//       </div>
-//       <div className="flex justify-end mt-4">
-//         <Button
-//           onClick={() => setOpen(true)}
-//           className="rounded-full text-gray-700 bg-orange-300 hover:bg-orange-500"
-//         >
-//           Proceed To Checkout
-//         </Button>
-//       </div>
-
-//       <CheckoutConfirmPage open={open} setOpen={setOpen} />
-//     </div>
-//   );
+// type User = {
+//   fullname: string;
+//   email: string;
+//   contact: number;
+//   address: string;
+//   city: string;
+//   country: string;
+//   profilePicture: string;
+//   admin: boolean;
+//   isVerified: boolean;
 // };
 
-// export default Cart;
+// type UserState = {
+//   user: User | null;
+//   isAuthenticated: boolean;
+//   isCheckingAuth: boolean;
+//   loading: boolean;
+//   signup: (input: SignupInputState) => Promise<void>;
+//   login: (input: LoginInputState) => Promise<void>;
+//   verifyEmail: (verificationCode: string) => Promise<void>;
+//   checkAuthentication: () => Promise<void>;
+//   logout: () => Promise<void>;
+//   forgotPassword: (email: string) => Promise<void>;
+//   resetPassword: (token: string, newPassword: string) => Promise<void>;
+//   updateProfile: (input: any) => Promise<void>;
+// };
+
+// export const useUserStore = create<UserState>()(
+//   persist(
+//     (set) => ({
+//       user: null,
+//       isAuthenticated: false,
+//       isCheckingAuth: true,
+//       loading: false,
+
+//       // Signup API Implementation
+//       signup: async (input: SignupInputState) => {
+//         set({ loading: true });
+//         try {
+//           // Ensure the payload matches the server's expected structure
+//           const payload = {
+//             fullname: input.fullname.trim(),
+//             email: input.email.trim(),
+//             password: input.password,
+//             contact: input.contact.toString(),
+//           };
+      
+//           const response = await axios.post(`${API_END_POINT}/signup`, payload, {
+//             headers: { "Content-Type": "application/json" },
+//             validateStatus: (status) => status < 500, // Handle client-side errors
+//           });
+//           if (response.data.success) {
+//             toast.success(response.data.message);
+//             set({
+//               loading: false,
+//               user: response.data.user,
+//               isAuthenticated: true,
+//             });
+//           }
+//         } catch (error: any) {
+//           toast.error(error.response?.data?.message || "Signup failed!");
+//           set({ loading: false });
+//         }
+//       },
+
+//       // Login API Implementation
+//       login: async (input: LoginInputState) => {
+//         set({ loading: true });
+//         try {
+//           const response = await axios.post(`${API_END_POINT}/login`, input, {
+//             headers: { "Content-Type": "application/json" },
+//           });
+//           if (response.data.success) {
+//             toast.success(response.data.message);
+//             set({
+//               loading: false,
+//               user: response.data.user,
+//               isAuthenticated: true,
+//             });
+//           }
+//         } catch (error: any) {
+//           toast.error(error.response?.data?.message || "Login failed!");
+//           set({ loading: false });
+//         }
+//       },
+
+//       // Verify Email API Implementation
+//       verifyEmail: async (verificationCode: string) => {
+//         set({ loading: true });
+//         try {
+//           const response = await axios.post(
+//             `${API_END_POINT}/verify-email`,
+//             { verificationCode },
+//             { headers: { "Content-Type": "application/json" } }
+//           );
+//           if (response.data.success) {
+//             toast.success(response.data.message);
+//             set({
+//               loading: false,
+//               user: response.data.user,
+//               isAuthenticated: true,
+//             });
+//           }
+//         } catch (error: any) {
+//           toast.error(error.response?.data?.message || "Verification failed!");
+//           set({ loading: false });
+//         }
+//       },
+
+//       // Check Authentication
+//       checkAuthentication: async () => {
+//         set({ isCheckingAuth: true });
+//         try {
+//           const response = await axios.get(`${API_END_POINT}/check-auth`);
+//           if (response.data.success) {
+//             set({
+//               user: response.data.user,
+//               isAuthenticated: true,
+//               isCheckingAuth: false,
+//             });
+//           }
+//         } catch (error) {
+//           set({ isAuthenticated: false, isCheckingAuth: false });
+//         }
+//       },
+
+//       // Logout API Implementation
+//       logout: async () => {
+//         set({ loading: true });
+//         try {
+//           const response = await axios.post(`${API_END_POINT}/logout`);
+//           if (response.data.success) {
+//             toast.success(response.data.message);
+//             set({
+//               loading: false,
+//               user: null,
+//               isAuthenticated: false,
+//             });
+//           }
+//         } catch (error: any) {
+//           toast.error(error.response?.data?.message || "Logout failed!");
+//           set({ loading: false });
+//         }
+//       },
+
+//       // Forgot Password API Implementation
+//       forgotPassword: async (email: string) => {
+//         set({ loading: true });
+//         try {
+//           const response = await axios.post(
+//             `${API_END_POINT}/forgot-password`,
+//             { email }
+//           );
+//           if (response.data.success) {
+//             toast.success(response.data.message);
+//             set({ loading: false });
+//           }
+//         } catch (error: any) {
+//           toast.error(error.response?.data?.message || "Request failed!");
+//           set({ loading: false });
+//         }
+//       },
+
+//       // Reset Password API Implementation
+//       resetPassword: async (token: string, newPassword: string) => {
+//         set({ loading: true });
+//         try {
+//           const response = await axios.post(
+//             `${API_END_POINT}/reset-password/${token}`,
+//             { newPassword }
+//           );
+//           if (response.data.success) {
+//             toast.success(response.data.message);
+//             set({ loading: false });
+//           }
+//         } catch (error: any) {
+//           toast.error(error.response?.data?.message || "Reset failed!");
+//           set({ loading: false });
+//         }
+//       },
+
+//       // Update Profile API Implementation
+//       updateProfile: async (input: any) => {
+//         set({ loading: true });
+//         try {
+//           const response = await axios.put(
+//             `${API_END_POINT}/profile/update`,
+//             input,
+//             { headers: { "Content-Type": "application/json" } }
+//           );
+//           if (response.data.success) {
+//             toast.success(response.data.message);
+//             set({
+//               user: response.data.user,
+//               isAuthenticated: true,
+//               loading: false,
+//             });
+//           }
+//         } catch (error: any) {
+//           toast.error(error.response?.data?.message || "Update failed!");
+//           set({ loading: false });
+//         }
+//       },
+//     }),
+//     {
+//       name: "user-store",
+//       storage: createJSONStorage(() => localStorage),
+//       partialize: (state: UserState) => ({
+//         user: state.user,
+//         isAuthenticated: state.isAuthenticated,
+//       }),
+//     }
+//   )
+// );
