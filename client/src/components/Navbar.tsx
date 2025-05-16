@@ -150,7 +150,10 @@ const Navbar = () => {
                 </Button>
               ) : (
                 <Button
-                  onClick={logout}
+                  onClick={() => {
+                    logout();
+                    window.location.href = "/login";
+                  }}
                   className="bg-orange-400 hover:bg-orange-500"
                 >
                   Logout

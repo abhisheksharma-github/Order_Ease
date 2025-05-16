@@ -36,7 +36,7 @@ type UserState = {
 
 export const useUserStore = create<UserState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       isAuthenticated: false,
       isCheckingAuth: true,
@@ -46,17 +46,8 @@ export const useUserStore = create<UserState>()(
       signup: async (input: SignupInputState) => {
         set({ loading: true });
         try {
-          // Ensure the payload matches the server's expected structure
-          const payload = {
-            fullname: input.fullname.trim(),
-            email: input.email.trim(),
-            password: input.password,
-            contact: input.contact.toString(),
-          };
-      
-          const response = await axios.post(`${API_END_POINT}/signup`, payload, {
+          const response = await axios.post(`${API_END_POINT}/signup`, input, {
             headers: { "Content-Type": "application/json" },
-            validateStatus: (status) => status < 500, // Handle client-side errors
           });
           if (response.data.success) {
             toast.success(response.data.message);
@@ -214,7 +205,7 @@ export const useUserStore = create<UserState>()(
     {
       name: "user-store",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state: UserState) => ({
+      partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),

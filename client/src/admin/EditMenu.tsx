@@ -10,23 +10,41 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MenuFormSchema, menuSchema } from "@/schema/menuSchema";
+import { useMenuStore } from "@/store/useMenuStore";
+import { MenuItem } from "@/types/restaurantType";
 import { Loader2 } from "lucide-react";
-import { Dispatch, SetStateAction, FormEvent, useEffect } from "react";
-import { useState } from "react";
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 
-type EditMenuProps = {
+const EditMenu = ({
+  selectedMenu,
+  editOpen,
+  setEditOpen,
+}: {
+  selectedMenu: MenuItem;
   editOpen: boolean;
-  setEditopen: Dispatch<SetStateAction<boolean>>;
-  selectedMenu: MenuFormSchema; // Change `any` to the proper type of your menu item
-};
-const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
+  setEditOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
   const [input, setInput] = useState<MenuFormSchema>({
     name: "",
     description: "",
     price: 0,
     image: undefined,
   });
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
+  const [error, setError] = useState<Partial<MenuFormSchema>>({});
+  const { loading, editMenu } = useMenuStore();
+
+  const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+    setInput({ ...input, [name]: type === "number" ? Number(value) : value });
+  };
+
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = menuSchema.safeParse(input);
     if (!result.success) {
@@ -36,15 +54,20 @@ const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
     }
 
     // api ka kaam start from here
+    try {
+      const formData = new FormData();
+      formData.append("name", input.name);
+      formData.append("description", input.description);
+      formData.append("price", input.price.toString());
+      if (input.image) {
+        formData.append("image", input.image);
+      }
+      await editMenu(selectedMenu._id, formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setInput((prevInput: any) => ({
-      ...prevInput,
-      [name]: name === "price" ? parseFloat(value) : value,
-    }));
-  };
   useEffect(() => {
     setInput({
       name: selectedMenu?.name || "",
@@ -53,15 +76,13 @@ const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
       image: undefined,
     });
   }, [selectedMenu]);
-  const [error, setError] = useState<Partial<MenuFormSchema>>();
-  const loading = false;
   return (
-    <Dialog open={editOpen} onOpenChange={setEditopen}>
+    <Dialog open={editOpen} onOpenChange={setEditOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Menu</DialogTitle>
           <DialogDescription>
-            Update Your Menu here! Keep your offering fresh and exciting.
+            Update your menu to keep your offerings fresh and exciting!
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submitHandler} className="space-y-4">
@@ -71,8 +92,8 @@ const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
               type="text"
               name="name"
               value={input.name}
-              placeholder="Enter Menu Name"
               onChange={changeEventHandler}
+              placeholder="Enter menu name"
             />
             {error && (
               <span className="text-xs font-medium text-red-600">
@@ -85,9 +106,9 @@ const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
             <Input
               type="text"
               name="description"
-              placeholder="Enter menu description"
               value={input.description}
               onChange={changeEventHandler}
+              placeholder="Enter menu description"
             />
             {error && (
               <span className="text-xs font-medium text-red-600">
@@ -101,8 +122,8 @@ const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
               type="number"
               name="price"
               value={input.price}
-              placeholder="Enter Menu price"
               onChange={changeEventHandler}
+              placeholder="Enter menu price"
             />
             {error && (
               <span className="text-xs font-medium text-red-600">
@@ -116,10 +137,7 @@ const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
               type="file"
               name="image"
               onChange={(e) =>
-                setInput((prevInput: any) => ({
-                  ...prevInput,
-                  image: e.target.files ? e.target.files[0] : undefined,
-                }))
+                setInput({ ...input, image: e.target.files?.[0] || undefined })
               }
             />
             {error && (
@@ -132,11 +150,11 @@ const EditMenu = ({ editOpen, setEditopen, selectedMenu }: EditMenuProps) => {
             {loading ? (
               <Button disabled className="bg-orange-400 hover:bg-orange-500">
                 <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-                Please Wait
+                Please wait
               </Button>
             ) : (
               <Button className="bg-orange-400 hover:bg-orange-500">
-                Submit Here
+                Submit
               </Button>
             )}
           </DialogFooter>
