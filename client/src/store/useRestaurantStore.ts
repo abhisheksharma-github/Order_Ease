@@ -99,7 +99,7 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set, get) =
         set((state: any) => {
             
             if (state.restaurant) {
-                const updatedMenuList = state.restaurant.menus.map((menu: any) => menu._id === updatedMenu._id ? updatedMenu : menu);
+                const updatedMenuList = state.restaurant.menus.map((menu: any) => menu._id === updatedMenu.id ? updatedMenu : menu);
                 return {
                     restaurant: {
                         ...state.restaurant,

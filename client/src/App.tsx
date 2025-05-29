@@ -70,7 +70,7 @@ const appRouter = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path: "/forget-password",
+    path: "/forgot-password",
     element: <ForgetPassword />,
   },
   {

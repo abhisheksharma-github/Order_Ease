@@ -41,7 +41,6 @@ const Restaurant = () => {
       setErrors(fieldErrors as Partial<RestaurantFormSchema>);
       return;
     }
-    // add restaurant api implementation start from here
     try {
       const formData = new FormData();
       formData.append("restaurantName", input.restaurantName);
@@ -55,10 +54,8 @@ const Restaurant = () => {
       }
 
       if (restaurant) {
-        // update
         await updateRestaurant(formData);
       } else {
-        // create
         await createRestaurant(formData);
       }
     } catch (error) {
@@ -87,75 +84,91 @@ const Restaurant = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto my-10">
+    <div className="max-w-4xl mx-auto my-10 bg-white rounded-lg shadow-lg p-8">
       <div>
         <div>
-          <h1 className="font-extrabold text-2xl mb-5">Add Restaurants</h1>
+          <h1 className="font-extrabold text-3xl md:text-4xl mb-8 text-orange-500 tracking-tight text-center">
+            {restaurant ? "Update Restaurant" : "Add Restaurant"}
+          </h1>
           <form onSubmit={submitHandler}>
-            <div className="md:grid grid-cols-2 gap-6 space-y-2 md:space-y-0">
+            <div className="md:grid grid-cols-2 gap-8 space-y-4 md:space-y-0">
               {/* Restaurant Name  */}
               <div>
-                <Label>Restaurant Name</Label>
+                <Label className="block text-lg font-semibold text-gray-700 mb-2">
+                  Restaurant Name
+                </Label>
                 <Input
                   type="text"
                   name="restaurantName"
                   value={input.restaurantName}
                   onChange={changeEventHandler}
                   placeholder="Enter your restaurant name"
+                  className="text-base px-4 py-2 rounded-md border-gray-300 focus:border-orange-400 focus:ring-orange-400"
                 />
                 {errors && (
-                  <span className="text-xs text-red-600 font-medium">
+                  <span className="text-xs text-red-600 font-medium mt-1 block">
                     {errors.restaurantName}
                   </span>
                 )}
               </div>
               <div>
-                <Label>City</Label>
+                <Label className="block text-lg font-semibold text-gray-700 mb-2">
+                  City
+                </Label>
                 <Input
                   type="text"
                   name="city"
                   value={input.city}
                   onChange={changeEventHandler}
                   placeholder="Enter your city name"
+                  className="text-base px-4 py-2 rounded-md border-gray-300 focus:border-orange-400 focus:ring-orange-400"
                 />
                 {errors && (
-                  <span className="text-xs text-red-600 font-medium">
+                  <span className="text-xs text-red-600 font-medium mt-1 block">
                     {errors.city}
                   </span>
                 )}
               </div>
               <div>
-                <Label>Country</Label>
+                <Label className="block text-lg font-semibold text-gray-700 mb-2">
+                  Country
+                </Label>
                 <Input
                   type="text"
                   name="country"
                   value={input.country}
                   onChange={changeEventHandler}
                   placeholder="Enter your country name"
+                  className="text-base px-4 py-2 rounded-md border-gray-300 focus:border-orange-400 focus:ring-orange-400"
                 />
                 {errors && (
-                  <span className="text-xs text-red-600 font-medium">
+                  <span className="text-xs text-red-600 font-medium mt-1 block">
                     {errors.country}
                   </span>
                 )}
               </div>
               <div>
-                <Label>Delivery Time</Label>
+                <Label className="block text-lg font-semibold text-gray-700 mb-2">
+                  Delivery Time
+                </Label>
                 <Input
                   type="number"
                   name="deliveryTime"
                   value={input.deliveryTime}
                   onChange={changeEventHandler}
                   placeholder="Enter your delivery time"
+                  className="text-base px-4 py-2 rounded-md border-gray-300 focus:border-orange-400 focus:ring-orange-400"
                 />
                 {errors && (
-                  <span className="text-xs text-red-600 font-medium">
+                  <span className="text-xs text-red-600 font-medium mt-1 block">
                     {errors.deliveryTime}
                   </span>
                 )}
               </div>
               <div>
-                <Label>Cuisines</Label>
+                <Label className="block text-lg font-semibold text-gray-700 mb-2">
+                  Cuisines
+                </Label>
                 <Input
                   type="text"
                   name="cuisines"
@@ -164,15 +177,18 @@ const Restaurant = () => {
                     setInput({ ...input, cuisines: e.target.value.split(",") })
                   }
                   placeholder="e.g. Momos, Biryani"
+                  className="text-base px-4 py-2 rounded-md border-gray-300 focus:border-orange-400 focus:ring-orange-400"
                 />
                 {errors && (
-                  <span className="text-xs text-red-600 font-medium">
+                  <span className="text-xs text-red-600 font-medium mt-1 block">
                     {errors.cuisines}
                   </span>
                 )}
               </div>
               <div>
-                <Label>Upload Restaurant Banner</Label>
+                <Label className="block text-lg font-semibold text-gray-700 mb-2">
+                  Upload Restaurant Banner
+                </Label>
                 <Input
                   onChange={(e) =>
                     setInput({
@@ -183,22 +199,26 @@ const Restaurant = () => {
                   type="file"
                   accept="image/*"
                   name="imageFile"
+                  className="text-base px-4 py-2 rounded-md border-gray-300 focus:border-orange-400 focus:ring-orange-400"
                 />
                 {errors && (
-                  <span className="text-xs text-red-600 font-medium">
+                  <span className="text-xs text-red-600 font-medium mt-1 block">
                     {errors.imageFile?.name}
                   </span>
                 )}
               </div>
             </div>
-            <div className="my-5 w-fit">
+            <div className="my-8 w-fit mx-auto">
               {loading ? (
-                <Button disabled className="bg-orange-400 hover:bg-orange-500">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Button
+                  disabled
+                  className="bg-orange-400 hover:bg-orange-500 text-lg font-bold px-8 py-3 rounded-md"
+                >
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Please wait
                 </Button>
               ) : (
-                <Button className="bg-orange-400 hover:bg-orange-500">
+                <Button className="bg-orange-500 hover:bg-orange-600 text-lg font-bold px-8 py-3 rounded-md shadow-md transition-all duration-200">
                   {restaurant
                     ? "Update Your Restaurant"
                     : "Add Your Restaurant"}

@@ -144,12 +144,12 @@ const Profile = () => {
       </div>
       <div className="text-center">
         {isLoading ? (
-          <Button disabled className="bg-orange hover:bg-hoverOrange">
+          <Button disabled className="bg-orange-500 hover:bg-orange-400">
             <Loader2 className="mr-2 w-4 h-4 animate-spin" />
             Please wait
           </Button>
         ) : (
-          <Button type="submit" className="bg-orange hover:bg-hoverOrange">
+          <Button type="submit" className="bg-orange-500 hover:bg-orange-400">
             Update
           </Button>
         )}
