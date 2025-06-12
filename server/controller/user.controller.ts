@@ -1,5 +1,14 @@
 import { Request, Response } from "express";
 import { User } from "../models/user.model";
+
+// Extend Express Request interface to include 'id'
+declare global {
+    namespace Express {
+        interface Request {
+            id: string;
+        }
+    }
+}
 import bcrypt from "bcryptjs";
 import crypto from "crypto"; 
 import cloudinary from "../utils/cloudinary";
@@ -32,7 +41,16 @@ export const signup = async (req: Request, res: Response) => {
         })
         generateToken(res,user);
 
-        await sendVerificationEmail(email, verificationToken);
+        try {
+            await sendVerificationEmail(email, verificationToken);
+        } catch (emailError) {
+            // Optionally, you may want to rollback user creation here
+            await User.deleteOne({ email });
+            return res.status(500).json({
+                success: false,
+                message: "Failed to send email verification. Please try again later."
+            });
+        }
 
         const userWithoutPassword = await User.findOne({ email }).select("-password");
 

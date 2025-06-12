@@ -4,7 +4,7 @@ import axios from 'axios';
 export const sendVerificationEmail = async (email: string, verificationToken: string) => {
     const recipient = [{ email }];
     try {
-        const res = await client.send({
+        await client.send({
             from: sender,
             to: recipient,
             subject: 'Verify your email',
