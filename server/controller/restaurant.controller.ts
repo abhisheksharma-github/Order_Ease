@@ -38,7 +38,7 @@ export const createRestaurant = async (req: Request, res: Response) => {
             message: "Restaurant Added"
         });
     } catch (error) {
-        console.log(error);
+        
         return res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -54,7 +54,7 @@ export const getRestaurant = async (req: Request, res: Response) => {
         };
         return res.status(200).json({ success: true, restaurant });
     } catch (error) {
-        console.log(error);
+     
         return res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -86,7 +86,7 @@ export const updateRestaurant = async (req: Request, res: Response) => {
             restaurant
         })
     } catch (error) {
-        console.log(error);
+     
         return res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -105,7 +105,7 @@ export const getRestaurantOrder = async (req: Request, res: Response) => {
             orders
         });
     } catch (error) {
-        console.log(error);
+       
         return res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -129,7 +129,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.log(error);
+       
         return res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -140,7 +140,7 @@ export const searchRestaurant = async (req: Request, res: Response) => {
         const selectedCuisines = (req.query.selectedCuisines as string || "").split(",").filter(cuisine => cuisine);
         const query: any = {};
         // basic search based on searchText (name ,city, country)
-        console.log(selectedCuisines);
+    
         
         if (searchText) {
             query.$or = [
@@ -156,8 +156,7 @@ export const searchRestaurant = async (req: Request, res: Response) => {
                 { cuisines: { $regex: searchQuery, $options: 'i' } }
             ]
         }
-        // console.log(query);
-        // ["momos", "burger"]
+    
         if(selectedCuisines.length > 0){
             query.cuisines = {$in:selectedCuisines}
         }
@@ -168,7 +167,7 @@ export const searchRestaurant = async (req: Request, res: Response) => {
             data:restaurants
         });
     } catch (error) {
-        console.log(error);
+     
         return res.status(500).json({ message: "Internal server error" })
     }
 }
@@ -187,7 +186,7 @@ export const getSingleRestaurant = async (req:Request, res:Response) => {
         };
         return res.status(200).json({success:true, restaurant});
     } catch (error) {
-        console.log(error);
+     
         return res.status(500).json({ message: "Internal server error" })
     }
 }

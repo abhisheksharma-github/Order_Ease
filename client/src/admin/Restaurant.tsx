@@ -58,9 +58,7 @@ const Restaurant = () => {
       } else {
         await createRestaurant(formData);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -80,7 +78,6 @@ const Restaurant = () => {
       }
     };
     fetchRestaurant();
-    console.log(restaurant);
   }, []);
 
   return (

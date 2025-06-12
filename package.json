@@ -25,7 +25,7 @@
     "mailtrap": "^3.4.0",
     "mongoose": "^8.14.1",
     "multer": "^1.4.5-lts.1",
-    "resend": "^4.5.1",
+    "resend": "^4.5.2",
     "stripe": "^16.8.0"
   },
   "devDependencies": {

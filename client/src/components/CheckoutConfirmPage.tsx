@@ -48,16 +48,14 @@ const CheckoutConfirmPage = ({
           menuId: cartItem._id, // ✅ Correct field
           name: cartItem.name,
           image: cartItem.image,
-          price: Number(cartItem.price),
-          quantity: Number(cartItem.quantity),
+          price: String(cartItem.price),
+          quantity: String(cartItem.quantity),
         })),
         deliveryDetails: input,
         restaurantId: restaurant?._id as string,
       };
       await createCheckoutSession(checkoutData);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   return (

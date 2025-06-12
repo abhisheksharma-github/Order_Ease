@@ -1,78 +1,66 @@
+// email.ts
+import { Resend } from 'resend';
 import { generatePasswordResetEmailHtml, generateResetSuccessEmailHtml, generateWelcomeEmailHtml, htmlContent } from "./htmlEmail";
-import { client, sender } from "./mailtrap";
-import axios from 'axios';
-export const sendVerificationEmail = async (email: string, verificationToken: string) => {
-    const recipient = [{ email }];
-    try {
-        await client.send({
-            from: sender,
-            to: recipient,
-            subject: 'Verify your email',
-            html:htmlContent.replace("{verificationToken}", verificationToken),
-            category: 'Email Verification'
-        });
-    } catch (error) {
-        console.log(error);
-        throw new Error("Failed to send email verification")
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const from = "OrderEase <no-reply@yourdomain.com>"; // replace with your verified domain
+
+export const sendVerificationEmail = async (email: string, verificationToken: string) => {
+    try {
+        await resend.emails.send({
+            from,
+            to: email,
+            subject: "Verify your email",
+            html: htmlContent.replace("{verificationToken}", verificationToken),
+        });
+    } catch (error) {
+    
+        throw new Error("Failed to send verification email");
     }
-}
+};
+
 export const sendWelcomeEmail = async (email: string, name: string) => {
-    const recipient = [{ email }];
-    const htmlContent = generateWelcomeEmailHtml(name);
+    const html = generateWelcomeEmailHtml(name);
     try {
-        const res = await client.send({
-            from: sender,
-            to: recipient,
-            subject: 'Welcome to OrderEase',
-            html:htmlContent,
-            template_variables:{
-                company_info_name:"OrderEase",
-                name:name
-            }
+        await resend.emails.send({
+            from,
+            to: email,
+            subject: "Welcome to OrderEase",
+            html,
         });
     } catch (error) {
-        console.log(error);
-        throw new Error("Failed to send welcome email")
+      
+        throw new Error("Failed to send welcome email");
     }
-}
-export const sendPasswordResetEmail = async (email:string, resetURL:string) => {
-    const recipient = [{ email }];
-    const htmlContent = generatePasswordResetEmailHtml(resetURL);
+};
+
+export const sendPasswordResetEmail = async (email: string, resetURL: string) => {
+    const html = generatePasswordResetEmailHtml(resetURL);
     try {
-        const res = await client.send({
-            from: sender,
-            to: recipient,
-            subject: 'Reset your password',
-            html:htmlContent,
-            category:"Reset Password"
+        await resend.emails.send({
+            from,
+            to: email,
+            subject: "Reset your password",
+            html,
         });
     } catch (error) {
-        console.log(error);
-        throw new Error("Failed to reset password")
+     
+        throw new Error("Failed to send password reset email");
     }
-}
-export const sendResetSuccessEmail = async (email:string) => {
-    const recipient = [{ email }];
-    const htmlContent = generateResetSuccessEmailHtml();
+};
+
+export const sendResetSuccessEmail = async (email: string) => {
+    const html = generateResetSuccessEmailHtml();
     try {
-        const res = await client.send({
-            from: sender,
-            to: recipient,
-            subject: 'Password Reset Successfully',
-            html:htmlContent,
-            category:"Password Reset"
+        await resend.emails.send({
+            from,
+            to: email,
+            subject: "Password Reset Successful",
+            html,
         });
     } catch (error) {
-        console.log(error);
-        throw new Error("Failed to send password reset success email");
+        
+        throw new Error("Failed to send reset success email");
     }
-}
-const axiosInstance = axios.create({
-    baseURL: 'https://send.api.mailtrap.io/api',
-    timeout: 30000, // 30 seconds
-   headers: {
-  Authorization: `Bearer ${process.env.MAILTRAP_API_TOKEN}`,
-  'Content-Type': 'application/json',
-},
-  });
+};

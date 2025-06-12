@@ -136,7 +136,7 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set, get) =
                 set({ restaurantOrder: response.data.orders });
             }
         } catch (error) {
-            console.log(error);
+          
         }
     },
     updateRestaurantOrder: async (orderId: string, status: string) => {

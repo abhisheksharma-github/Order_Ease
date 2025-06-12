@@ -43,8 +43,8 @@ app.use("*", (_, res) => {
 // Start server only after DB connection
 connectDB().then(() => {
     app.listen(PORT, () => {
-        console.log(`✅ Server running on port ${PORT}`);
+      
     });
 }).catch((err) => {
-    console.error("❌ Failed to connect to DB:", err);
+   
 });

@@ -30,7 +30,7 @@ export const getOrders = async (req: Request, res: Response) => {
             orders
         });
     } catch (error) {
-        console.log(error);
+       
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 }
@@ -79,7 +79,7 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
             session
         });
     } catch (error) {
-        console.log(error);
+    
         return res.status(500).json({ message: "Internal server error" })
 
     }
@@ -104,7 +104,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
         // Construct the event using the payload string and header
         event = stripe.webhooks.constructEvent(payloadString, header, secret);
     } catch (error: any) {
-        console.error('Webhook error:', error.message);
+     
         return res.status(400).send(`Webhook error: ${error.message}`);
     }
 
@@ -126,7 +126,7 @@ export const stripeWebhook = async (req: Request, res: Response) => {
 
             await order.save();
         } catch (error) {
-            console.error('Error handling event:', error);
+       
             return res.status(500).json({ message: "Internal Server Error" });
         }
     }

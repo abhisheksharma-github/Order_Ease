@@ -39,10 +39,7 @@ const Signup = () => {
     try {
       await signup(input);
       navigate("/verify-email");
-    } catch (error) {
-      console.error("Signup failed:", error); // Use console.error for better debugging
-      // Optionally handle error state for API failure
-    }
+    } catch (error) {}
   };
 
   return (

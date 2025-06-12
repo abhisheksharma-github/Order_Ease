@@ -32,7 +32,7 @@ const Login = () => {
       await login(input);
       navigate("/");
     } catch (error) {
-      console.log(error);
+     
     }
   };
 
