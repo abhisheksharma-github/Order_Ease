@@ -36,7 +36,7 @@ type UserState = {
 
 export const useUserStore = create<UserState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       isAuthenticated: false,
       isCheckingAuth: true,
