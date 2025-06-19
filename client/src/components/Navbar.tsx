@@ -74,36 +74,37 @@ const Navbar = () => {
             >
               Order
             </Link>
-
-            {user?.admin && (
-              <Menubar>
-                <MenubarMenu>
-                  <MenubarTrigger className="text-black dark:text-white hover:text-orange-500">
-                    Dashboard
-                  </MenubarTrigger>
-                  <MenubarContent>
-                    <Link
-                      to="/admin/restaurant"
-                      className="text-black dark:text-white hover:text-orange-500"
-                    >
-                      <MenubarItem>Restaurant</MenubarItem>
-                    </Link>
-                    <Link
-                      to="/admin/menu"
-                      className="text-black dark:text-white hover:text-orange-500 block mb-2"
-                    >
-                      <MenubarItem>Menu</MenubarItem>
-                    </Link>
-                    <Link
-                      to="/admin/orders"
-                      className="text-black dark:text-white hover:text-orange-500 block mb-2"
-                    >
-                      <MenubarItem>Orders</MenubarItem>
-                    </Link>
-                  </MenubarContent>
-                </MenubarMenu>
-              </Menubar>
-            )}
+            <Menubar>
+              <MenubarMenu>
+                <MenubarTrigger className="text-black dark:text-white hover:text-orange-500">
+                  Dashboard
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="admin/restaurant">Admin Restaurant</Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/menu">Admin Menu</Link>
+                  </MenubarItem>
+                  {user?.admin && (
+                    <>
+                      <MenubarItem asChild>
+                        <Link to="/admin/dashboard">Admin Dashboard</Link>
+                      </MenubarItem>
+                      <MenubarItem asChild>
+                        <Link to="/admin/restaurant">Restaurant Admin</Link>
+                      </MenubarItem>
+                      <MenubarItem asChild>
+                        <Link to="/admin/menu">Menu Admin</Link>
+                      </MenubarItem>
+                      <MenubarItem asChild>
+                        <Link to="/admin/orders">Order Admin</Link>
+                      </MenubarItem>
+                    </>
+                  )}
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
           </div>
           <div className="flex items-center gap-4">
             <div>
@@ -234,6 +235,13 @@ const MobileNavbar = () => {
           </Link>
           {user?.admin && (
             <>
+              <Link
+                to="/admin/dashboard"
+                className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
+              >
+                <Menu />
+                <span>Dashboard</span>
+              </Link>
               <Link
                 to="/admin/menu"
                 className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
