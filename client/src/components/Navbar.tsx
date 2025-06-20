@@ -86,7 +86,7 @@ const Navbar = () => {
                     <Link to="admin/restaurant">Admin Restaurant</Link>
                   </MenubarItem>
                   <MenubarItem asChild>
-                    <Link to="/admin">Admin Menu</Link>
+                    <Link to="/admin/menu">Admin Menu</Link>
                   </MenubarItem>
                   {user?.admin && (
                     <>
