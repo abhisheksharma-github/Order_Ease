@@ -20,7 +20,8 @@ A smart restaurant ordering system for Dine-In and Takeaway built using React, N
 
 🎯 Fully responsive UI for all devices
 
-🛠 Tech Stack
+
+🛠 Tech Stack"-
 
 React.js
 
