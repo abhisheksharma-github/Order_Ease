@@ -1,0 +1,40 @@
+# Common Node.js and Browser ignores
+node_modules/
+dist/
+build/
+.cache/
+*.log*
+
+# Environment files - CRITICAL to keep secret
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.sample
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and Editor settings
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.project
+.settings/
+.classpath
+
+# Testing
+coverage/
+
+# Misc
+temp/
+tmp/
+uploads/
+public/storage/
